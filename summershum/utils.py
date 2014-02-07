@@ -88,21 +88,18 @@ def walk_directory(directory):
     """ Return a tuple (filename, sha1) for every files present in the
     specified folder and do so recursively.
     """
-
-    output = []
     for root, dirnames, filenames in os.walk(directory):
 
         for filename in filenames:
             file_path = os.path.join(root, filename)
             with open(file_path) as stream:
                 sha = hashlib.sha1(stream.read()).hexdigest()
-                output.append((file_path, sha))
+                yield (file_path, sha)
 
         for dirname in dirnames:
             full_path = os.path.join(root, dirname)
-            output.extend(walk_directory(full_path))
-
-    return output
+            for item in walk_directory(full_path):
+                yield item
 
 
 def __get_messages(cnt=10):
