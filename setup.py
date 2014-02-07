@@ -9,6 +9,7 @@ setup(
     url='https://github.com/fedora-infra/summershum',
     install_requires=[
         "fedmsg",
+        "sqlalchemy",
     ],
     packages=[
         'summershum',
@@ -16,5 +17,8 @@ setup(
     entry_points="""
     [moksha.consumer]
     summershumconsumer = summershum:SummerShumConsumer
+
+    [console_scripts]
+    summershum-cli = summershum.cli:main
     """,
 )
