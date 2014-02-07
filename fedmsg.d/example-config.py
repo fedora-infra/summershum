@@ -1,0 +1,3 @@
+config = {
+    'summershum.enabled': True,
+}
