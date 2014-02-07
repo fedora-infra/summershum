@@ -3,7 +3,7 @@ import summershum.utils
 
 
 class SummerShumConsumer(fedmsg.consumers.FedmsgConsumer):
-    topic = 'org.fedoraproject.prod.*'
+    topic = 'org.fedoraproject.prod.git.lookaside.new'
     config_key = 'summershum.enabled'
 
     def consume(self, msg):
