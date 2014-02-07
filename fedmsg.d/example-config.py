@@ -11,4 +11,13 @@ config = {
             "tcp://127.0.0.1:99887",
         ],
     },
+    'logging': {
+        'loggers': {
+            'summershum': {
+                'handlers': ['console'],
+                'level': 'INFO',
+                'propagate': False
+            },
+        },
+    },
 }
