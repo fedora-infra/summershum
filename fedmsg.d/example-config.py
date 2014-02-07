@@ -16,7 +16,7 @@ config = {
         'loggers': {
             'summershum': {
                 'handlers': ['console'],
-                'level': 'INFO',
+                'level': 'DEBUG',
                 'propagate': False
             },
         },

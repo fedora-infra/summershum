@@ -10,6 +10,9 @@ from subprocess import Popen, PIPE
 
 from model import Package, create_session
 
+import logging
+log = logging.getLogger("summershum")
+
 
 DATAGREPPER_URL = 'https://apps.fedoraproject.org/datagrepper/raw/'
 LOOKASIDE_URL = 'http://pkgs.fedoraproject.org/lookaside/pkgs/'
@@ -56,7 +59,7 @@ def get_sha1sum(session, message):
 
     filename = proc.communicate()[0].split('\n')[0].split('/')[0]
 
-    print message['name'], message['filename'], filename
+    log.info("%r %r %r" % (message['name'], message['filename'], filename))
     index = message['filename'].rfind('-', 0, message['filename'].index('.'))
     version = message['filename'][(index + 1):]
     if version.endswith('.tar.gz') or version.endswith('.tar.xz'):
@@ -75,8 +78,12 @@ def get_sha1sum(session, message):
             )
             session.add(pkgobj)
         else:
-            print pkgobj
-            print message['name'], pkgobj.sha1sum == entry[1], pkgobj.filename == entry[0]
+            log.info(pkgobj)
+            log.info("%r %r %r" % (
+                message['name'],
+                pkgobj.sha1sum == entry[1],
+                pkgobj.filename == entry[0],
+            ))
     session.commit()
 
     if filename and os.path.exists(filename):
