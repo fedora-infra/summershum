@@ -75,6 +75,21 @@ class Package(BASE):
         return query.all()
 
     @classmethod
+    def by_pkg_sum(cls, session, pkg_sum):
+        """ Retrieves all the entries having the specified pkg_sum (the *sum,
+        md5sum or sha1sum or... of the package, as provided in fedmsg).
+        """
+        query = session.query(
+            cls
+        ).filter(
+            cls.pkg_sum
+        ).order_by(
+            cls.pkg_name, cls.pkg_file, cls.filename
+        )
+
+        return query.all()
+
+    @classmethod
     def exists(cls, session, pkg_sum, filename):
         """ Retrieve the packages having the specified package *sum (md5/sha1),
         and filename.
