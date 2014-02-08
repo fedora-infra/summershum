@@ -11,7 +11,7 @@ config = {
 
     # Here is where we will publish our status
     'endpoints': {
-        'summershum.%s' % hostname: [
+        'summershum.%s' % hostname.split('.')[0]: [
             "tcp://127.0.0.1:99887",
         ],
     },
