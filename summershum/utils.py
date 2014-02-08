@@ -14,6 +14,7 @@ import logging
 log = logging.getLogger("summershum")
 
 
+# TODO -- get these from the fedmsg config loaded in consumer.py and cli.py
 DATAGREPPER_URL = 'https://apps.fedoraproject.org/datagrepper/raw/'
 LOOKASIDE_URL = 'http://pkgs.fedoraproject.org/lookaside/pkgs/'
 DB_URL = 'sqlite:////var/tmp/summershum.sqlite'
