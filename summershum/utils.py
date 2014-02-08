@@ -59,25 +59,19 @@ def get_sha1sum(session, message, tmpdir):
         log.warning("No files extracted from %r" % local_filename)
         return
 
-    index = message['filename'].rfind('-', 0, message['filename'].index('.'))
-    version = message['filename'][(index + 1):]
-    if version.endswith('.tar.gz') or version.endswith('.tar.xz'):
-        version = version.rsplit('.', 2)[0]
-    else:
-        version = version.rsplit('.', 1)[0]
-
     filename = "/".join([tmpdir, filename])
 
     count, stored = 0, 0
     for entry in walk_directory(filename):
         count = count + 1
-        pkgobj = Package.exists(session, message['name'], entry[0], version)
+        pkgobj = Package.exists(session, message['md5sum'], entry[0])
         if not pkgobj:
             pkgobj = Package(
                 pkg_name=message['name'],
                 filename=entry[0],
                 sha1sum=entry[1],
-                version=version
+                pkg_file=message['filename'],
+                pkg_sum=message['md5sum']
             )
             session.add(pkgobj)
             stored = stored + 1
