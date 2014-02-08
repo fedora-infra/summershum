@@ -20,8 +20,8 @@ With the summershum database, we can then make some interesting queries
 in short time:
 
 - how many files have this hash sum in all of fedora?  and for which
-  packages?
-- we can easily find what is bundling what and generate a programattic list
+  packages ?
+- we can easily find what is bundling what and generate a programatic list
 - we could check the db in taskotron tests
-- we could check to see how many packages include the full gpl license
+- we could check to see how many packages include the full GPL license
 - how many packages have that license but with the old FSF address
