@@ -11,6 +11,11 @@ class SummerShumConsumer(fedmsg.consumers.FedmsgConsumer):
 
     def __init__(self, *args, **kwargs):
         super(SummerShumConsumer, self).__init__(*args, **kwargs)
+        log.info("Initializing db session")
+        self.session = summershum.utils.create_session(
+            self.hub.config['summershum.sqlalchemy.url'],
+            create=True,
+        )
         log.info("Ready for ingestion")
 
     def consume(self, msg):
