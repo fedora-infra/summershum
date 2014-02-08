@@ -50,17 +50,18 @@ class Package(BASE):
     pkg_name = sa.Column(sa.String(200), index=True, nullable=False)
     filename = sa.Column(sa.String(200), nullable=False)
     sha1sum = sa.Column(sa.String(200), index=True, nullable=True)
-    version = sa.Column(sa.String(50), nullable=False)
+    pkg_file = sa.Column(sa.String(200), nullable=False)
+    pkg_sum = sa.Column(sa.String(200), nullable=False)
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
-        sa.UniqueConstraint('pkg_name', 'filename', 'version'),
+        sa.UniqueConstraint('pkg_sum', 'filename'),
     )
 
     def __repr__(self):
         """ String representation of that object. """
         return '<Package(project:%s, file:%s, sha1:%s)>' % (
-            self.pkg_name, self.filename, self.sha1sum)
+            self.pkg_name, self.pkg_file, self.sha1sum)
 
     @classmethod
     def by_sha(cls, session, sha1sum):
@@ -74,20 +75,18 @@ class Package(BASE):
         return query.all()
 
     @classmethod
-    def exists(cls, session, pkg_name, filename, version):
-        """ Retrieve the packages having the specified package name,
-        filename and version.
+    def exists(cls, session, pkg_sum, filename):
+        """ Retrieve the packages having the specified package *sum (md5/sha1),
+        and filename.
         """
         query = session.query(
             cls
         ).filter(
-            cls.pkg_name == pkg_name
+            cls.pkg_sum == pkg_sum
         ).filter(
             cls.filename == filename
-        ).filter(
-            cls.version == version
         ).order_by(
-            cls.filename, cls.version
+            cls.pkg_name, cls.pkg_file, cls.filename
         )
 
         return query.first()
