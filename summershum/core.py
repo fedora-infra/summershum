@@ -12,11 +12,13 @@ def ingest(session, msg, config):
         )
 
         lookaside_url = config['summershum.lookaside']
+        tmpdir = config['summershum.tmpdir']
 
         try:
-            summershum.utils.download_lookaside(msg, lookaside_url)
-            summershum.utils.get_sha1sum(session, msg)
+            summershum.utils.download_lookaside(msg, lookaside_url, tmpdir)
+            summershum.utils.get_sha1sum(session, msg, tmpdir)
         except Exception as e:
+            log.exception(e)
             log.error("Failed to ingest %r %r" % (msg.get('filename'), e))
             fedmsg.publish(
                 topic='ingest.fail',

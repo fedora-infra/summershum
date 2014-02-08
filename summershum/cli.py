@@ -25,10 +25,8 @@ def __get_messages(datagrepper_url):
             'rows_per_page': rows_per_page,
         }
 
-        req = requests.get(datagrepper_url + 'raw/', params=param)
-
-        data = json.loads(req.text)
-        return data
+        response = requests.get(datagrepper_url + 'raw/', params=param)
+        return json.loads(response.text)
 
     # Make an initial query just to get the number of pages
     data = _load_page(page=1)

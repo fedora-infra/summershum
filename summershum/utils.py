@@ -13,7 +13,7 @@ import logging
 log = logging.getLogger("summershum")
 
 
-def download_lookaside(message, lookaside_url):
+def download_lookaside(message, lookaside_url, tmpdir):
     """ For a provided pkg updated, download the sources. """
 
     url = '%(base_url)s/%(pkg_name)s/%(sources)s/%(md5)s/%(sources)s' %(
@@ -23,7 +23,7 @@ def download_lookaside(message, lookaside_url):
         }
     )
 
-    local_filename = message['filename']
+    local_filename = "/".join([tmpdir, message['filename']])
 
     req = requests.get(url, stream=True)
     with open(local_filename, 'wb') as stream:
@@ -33,25 +33,31 @@ def download_lookaside(message, lookaside_url):
                 stream.flush()
 
 
-def get_sha1sum(session, message):
+def get_sha1sum(session, message, tmpdir):
     """ Extract the content of the file extracted from the fedmsg message
     and browse the sources of the specified package and for each of the
     files in the sources get their sha1sum.
     """
-    if not os.path.exists(message['filename']):
-        raise IOError('File %s not found' % message['filename'])
+    local_filename = "/".join([tmpdir, message['filename']])
+
+    if not os.path.exists(local_filename):
+        raise IOError('File %s not found' % local_filename)
 
     # FIXME: support gems
-    if message['filename'].endswith('.gem'):
+    if local_filename.endswith('.gem'):
         return
 
-    cmd = ['rpmdev-extract', message['filename']]
+    cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     if proc.returncode:
         raise IOError(
-            'Something went wrong when extracting %s' % message['filename'])
+            'Something went wrong when extracting %s' % local_filename)
 
     filename = proc.communicate()[0].split('\n')[0].split('/')[0]
+
+    if not filename:
+        log.warning("No files extracted from %r" % local_filename)
+        return
 
     index = message['filename'].rfind('-', 0, message['filename'].index('.'))
     version = message['filename'][(index + 1):]
@@ -59,6 +65,8 @@ def get_sha1sum(session, message):
         version = version.rsplit('.', 2)[0]
     else:
         version = version.rsplit('.', 1)[0]
+
+    filename = "/".join([tmpdir, filename])
 
     count, stored = 0, 0
     for entry in walk_directory(filename):
@@ -79,7 +87,7 @@ def get_sha1sum(session, message):
 
     if filename and os.path.exists(filename):
         shutil.rmtree(filename)
-        os.unlink(message['filename'])
+        os.unlink(local_filename)
 
     log.info("Stored %i of %i files" % (stored, count))
 
@@ -95,3 +103,4 @@ def walk_directory(directory):
             with open(file_path) as stream:
                 sha = hashlib.sha1(stream.read()).hexdigest()
                 yield (file_path, sha)
+
