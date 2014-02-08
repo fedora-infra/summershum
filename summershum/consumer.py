@@ -23,4 +23,5 @@ class SummerShumConsumer(fedmsg.consumers.FedmsgConsumer):
         summershum.core.ingest(
             session=self.session,
             msg=msg,
+            config=self.hub.config,
         )

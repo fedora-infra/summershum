@@ -13,17 +13,12 @@ import logging
 log = logging.getLogger("summershum")
 
 
-# TODO -- get these from the fedmsg config loaded in consumer.py and cli.py
-LOOKASIDE_URL = 'http://pkgs.fedoraproject.org/lookaside/pkgs/'
-DB_URL = 'sqlite:////var/tmp/summershum.sqlite'
-
-
-def download_lookaside(message):
+def download_lookaside(message, lookaside_url):
     """ For a provided pkg updated, download the sources. """
 
     url = '%(base_url)s/%(pkg_name)s/%(sources)s/%(md5)s/%(sources)s' %(
         {
-            'base_url': LOOKASIDE_URL, 'pkg_name': message['name'],
+            'base_url': lookaside_url, 'pkg_name': message['name'],
             'sources': message['filename'], 'md5': message['md5sum']
         }
     )

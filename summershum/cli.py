@@ -11,11 +11,8 @@ import logging.config
 
 log = logging.getLogger("summershum")
 
-# TODO -- get this from the fedmsg config
-DATAGREPPER_URL = 'https://apps.fedoraproject.org/datagrepper/raw/'
 
-
-def __get_messages():
+def __get_messages(datagrepper_url):
     """ Retrieves git.lookaside.new messages from datagrepper. """
 
     rows_per_page = 10
@@ -28,7 +25,7 @@ def __get_messages():
             'rows_per_page': rows_per_page,
         }
 
-        req = requests.get(DATAGREPPER_URL, params=param)
+        req = requests.get(datagrepper_url + 'raw/', params=param)
 
         data = json.loads(req.text)
         return data
@@ -61,10 +58,12 @@ def main():
         create=True,
     )
 
-    messages = __get_messages()
+    datagrepper_url = config['summershum.datagrepper']
+    messages = __get_messages(datagrepper_url)
     for message in messages:
         msg = message['msg']
         summershum.core.ingest(
             session=session,
             msg=msg,
+            config=config,
         )
