@@ -4,6 +4,7 @@ import fedmsg
 import logging
 log = logging.getLogger("summershum")
 
+
 def ingest(session, msg, config):
         log.info("Ingesting %r" % msg.get('filename'))
         fedmsg.publish(

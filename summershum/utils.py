@@ -16,7 +16,7 @@ log = logging.getLogger("summershum")
 def download_lookaside(message, lookaside_url, tmpdir):
     """ For a provided pkg updated, download the sources. """
 
-    url = '%(base_url)s/%(pkg_name)s/%(sources)s/%(md5)s/%(sources)s' %(
+    url = '%(base_url)s/%(pkg_name)s/%(sources)s/%(md5)s/%(sources)s' % (
         {
             'base_url': lookaside_url, 'pkg_name': message['name'],
             'sources': message['filename'], 'md5': message['md5sum']
@@ -103,4 +103,3 @@ def walk_directory(directory):
             with open(file_path) as stream:
                 sha = hashlib.sha1(stream.read()).hexdigest()
                 yield (file_path, sha)
-
