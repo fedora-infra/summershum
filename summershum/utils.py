@@ -60,7 +60,6 @@ def get_sha1sum(session, message):
 
     filename = proc.communicate()[0].split('\n')[0].split('/')[0]
 
-    log.info("%r %r %r" % (message['name'], message['filename'], filename))
     index = message['filename'].rfind('-', 0, message['filename'].index('.'))
     version = message['filename'][(index + 1):]
     if version.endswith('.tar.gz') or version.endswith('.tar.xz'):
@@ -68,7 +67,9 @@ def get_sha1sum(session, message):
     else:
         version = version.rsplit('.', 1)[0]
 
+    count, stored = 0, 0
     for entry in walk_directory(filename):
+        count = count + 1
         pkgobj = Package.exists(session, message['name'], entry[0], version)
         if not pkgobj:
             pkgobj = Package(
@@ -78,18 +79,16 @@ def get_sha1sum(session, message):
                 version=version
             )
             session.add(pkgobj)
+            stored = stored + 1
         else:
-            log.info(pkgobj)
-            log.info("%r %r %r" % (
-                message['name'],
-                pkgobj.sha1sum == entry[1],
-                pkgobj.filename == entry[0],
-            ))
+            pass
     session.commit()
 
     if filename and os.path.exists(filename):
         shutil.rmtree(filename)
         os.unlink(message['filename'])
+
+    log.info("Stored %i of %i files" % (stored, count))
 
 
 def walk_directory(directory):
