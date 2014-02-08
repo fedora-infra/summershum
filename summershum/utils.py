@@ -103,10 +103,6 @@ def walk_directory(directory):
                 sha = hashlib.sha1(stream.read()).hexdigest()
                 yield (file_path, sha)
 
-        for dirname in dirnames:
-            full_path = os.path.join(root, dirname)
-            for item in walk_directory(full_path):
-                yield item
 
 
 def __get_messages(cnt=10):
