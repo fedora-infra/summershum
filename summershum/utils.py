@@ -1,5 +1,4 @@
 import hashlib
-import json
 import os
 import shutil
 import sys
@@ -15,7 +14,6 @@ log = logging.getLogger("summershum")
 
 
 # TODO -- get these from the fedmsg config loaded in consumer.py and cli.py
-DATAGREPPER_URL = 'https://apps.fedoraproject.org/datagrepper/raw/'
 LOOKASIDE_URL = 'http://pkgs.fedoraproject.org/lookaside/pkgs/'
 DB_URL = 'sqlite:////var/tmp/summershum.sqlite'
 
@@ -102,34 +100,3 @@ def walk_directory(directory):
             with open(file_path) as stream:
                 sha = hashlib.sha1(stream.read()).hexdigest()
                 yield (file_path, sha)
-
-
-
-def __get_messages(cnt=10):
-    """ Retrieves the ``cnt`` last message refering to git.lookaside.new
-    on datagrepper.
-    """
-
-    param = {
-        'topic': 'org.fedoraproject.prod.git.lookaside.new',
-        'order': 'desc',
-        'rows_per_page': cnt,
-    }
-
-    req = requests.get(DATAGREPPER_URL, params=param)
-
-    data = json.loads(req.text)
-
-    return data['raw_messages']
-
-
-if __name__ == '__main__':
-    session = create_session(DB_URL, create=True)
-
-    messages = __get_messages()
-    for message in messages:
-        print message['msg']['name']
-        download_lookaside(message['msg'])
-        get_sha1sum(session, message['msg'])
-
-    print '%s packages retrieved' % len(messages)
