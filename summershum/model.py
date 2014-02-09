@@ -51,7 +51,7 @@ class Package(BASE):
     filename = sa.Column(sa.String(200), nullable=False)
     sha1sum = sa.Column(sa.String(200), index=True, nullable=True)
     pkg_file = sa.Column(sa.String(200), nullable=False)
-    pkg_sum = sa.Column(sa.String(200), nullable=False)
+    pkg_sum = sa.Column(sa.String(200), index=True, nullable=False)
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
