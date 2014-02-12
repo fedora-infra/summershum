@@ -47,11 +47,11 @@ class Package(BASE):
     __tablename__ = 'packages'
 
     id = sa.Column(sa.Integer, primary_key=True)
-    pkg_name = sa.Column(sa.String(200), index=True, nullable=False)
-    filename = sa.Column(sa.String(200), nullable=False)
-    sha1sum = sa.Column(sa.String(200), index=True, nullable=True)
-    pkg_file = sa.Column(sa.String(200), nullable=False)
-    pkg_sum = sa.Column(sa.String(200), index=True, nullable=False)
+    pkg_name = sa.Column(sa.Text, index=True, nullable=False)
+    filename = sa.Column(sa.Text, nullable=False)
+    sha1sum = sa.Column(sa.String(64), index=True, nullable=True)
+    pkg_file = sa.Column(sa.Text, nullable=False)
+    pkg_sum = sa.Column(sa.String(32), index=True, nullable=False)
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
