@@ -82,7 +82,7 @@ class Package(BASE):
         query = session.query(
             cls
         ).filter(
-            cls.pkg_sum==pkg_sum
+            cls.pkg_sum == pkg_sum
         ).order_by(
             cls.pkg_name, cls.pkg_file, cls.filename
         )

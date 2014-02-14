@@ -7,10 +7,11 @@ log = logging.getLogger("summershum")
 
 
 def ingest(session, msg, config, force=False):
-    if summershum.model.Package.by_pkg_sum(session, msg['md5sum']) \
-            and not force:
-        log.info("Skipping %r - md5sum already found in the database", msg.get('filename'))
+    found = summershum.model.Package.by_pkg_sum(session, msg['md5sum'])
+    if found and not force:
+        log.info("Skipping %r, sum found in the db" % msg.get('filename'))
         return
+
     log.info("Ingesting %r" % msg.get('filename'))
     fedmsg.publish(
         topic='ingest.start',
