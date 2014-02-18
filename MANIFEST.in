@@ -1,0 +1,7 @@
+include LICENSE
+include README.rst
+include CHANGELOG.rst
+include summershum.png
+
+graft fedmsg.d
+graft tests

@@ -7,6 +7,7 @@ setup(
     author='Pierre-Yves Chibon & Ralph Bean',
     author_email='admin@fedoraproject.org',
     url='https://github.com/fedora-infra/summershum',
+    license='gplv2+',
     install_requires=[
         "fedmsg",
         "sqlalchemy",
