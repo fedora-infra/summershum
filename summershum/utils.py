@@ -33,10 +33,10 @@ def download_lookaside(message, lookaside_url, tmpdir):
                 stream.flush()
 
 
-def get_sha1sum(session, message, tmpdir):
+def calculate_sums(session, message, tmpdir):
     """ Extract the content of the file extracted from the fedmsg message
     and browse the sources of the specified package and for each of the
-    files in the sources get their sha1sum.
+    files in the sources get their sha256sum, sha1sum, and md5sum.
     """
     local_filename = "/".join([tmpdir, message['filename']])
 
@@ -62,13 +62,14 @@ def get_sha1sum(session, message, tmpdir):
     filename = "/".join([tmpdir, filename])
 
     count, stored = 0, 0
-    for fname, sha1sum, md5sum in walk_directory(filename):
+    for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
         count = count + 1
         pkgobj = File.exists(session, message['md5sum'], fname)
         if not pkgobj:
             pkgobj = File(
                 pkg_name=message['name'],
                 filename=fname,
+                sha256sum=sha256sum,
                 sha1sum=sha1sum,
                 md5sum=md5sum,
                 tar_file=message['filename'],
@@ -88,8 +89,8 @@ def get_sha1sum(session, message, tmpdir):
 
 
 def walk_directory(directory):
-    """ Return a tuple (filename, sha1, md5) for every files present in the
-    specified folder and do so recursively.
+    """ Return a tuple (filename, sha256, sha1, md5) for every files present in
+    the specified folder and do so recursively.
     """
     for root, dirnames, filenames in os.walk(directory):
 
@@ -97,6 +98,7 @@ def walk_directory(directory):
             file_path = os.path.join(root, filename)
             with open(file_path) as stream:
                 contents = stream.read()
+                sha256sum = hashlib.sha256(contents).hexdigest()
                 sha1sum = hashlib.sha1(contents).hexdigest()
                 md5sum = hashlib.md5(contents).hexdigest()
-                yield (file_path, sha1sum, md5sum)
+                yield (file_path, sha256sum, sha1sum, md5sum)

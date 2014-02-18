@@ -23,7 +23,7 @@ def ingest(session, msg, config, force=False):
 
     try:
         summershum.utils.download_lookaside(msg, lookaside_url, tmpdir)
-        summershum.utils.get_sha1sum(session, msg, tmpdir)
+        summershum.utils.calculate_sums(session, msg, tmpdir)
     except Exception as e:
         log.exception(e)
         log.error("Failed to ingest %r %r" % (msg.get('filename'), e))

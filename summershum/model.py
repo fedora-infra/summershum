@@ -41,7 +41,7 @@ def create_session(db_url, alembic_ini=None, debug=False, create=False):
 
 
 class File(BASE):
-    """ The ``files`` table in the database containing all the sha1sum
+    """ The ``files`` table in the database containing all the sha256sum
     of all the files in all the packages.
     """
     __tablename__ = 'files'
@@ -50,13 +50,18 @@ class File(BASE):
     filename = sa.Column(sa.Text, nullable=False)
 
     # This is our primary means of distinguishing files
-    sha1sum = sa.Column(sa.String(64), index=True, nullable=True)
-    # We also keep an md5sum in the wild case that there's a sha1 collision.
+    sha256sum = sa.Column(sa.String(64), index=True, nullable=True)
+    # We also keep others in the wild case that there's a sha256 collision.
+    sha1sum = sa.Column(sa.String(40), index=True, nullable=True)
     md5sum = sa.Column(sa.String(32), index=True, nullable=True)
 
     pkg_name = sa.Column(sa.Text, index=True, nullable=False)
     tar_file = sa.Column(sa.Text, nullable=False)
-    tar_sum = sa.Column(sa.String(32), index=True, nullable=False)
+
+    # For now, this is an md5 handed to us by another application, so it need
+    # only be 32 bits.  But in the future we'd like to move to a more modern
+    # hash.  Therefore we size this column up to 64 bits.
+    tar_sum = sa.Column(sa.String(64), index=True, nullable=False)
 
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
@@ -66,11 +71,17 @@ class File(BASE):
 
     def __repr__(self):
         """ String representation of that object. """
-        return '<File(tar_file:%s, filename:%s, sha1:%s)>' % (
-            self.tar_file, self.filename, self.sha1sum)
+        return '<File(tar_file:%s, filename:%s, sha256:%s)>' % (
+            self.tar_file, self.filename, self.sha256sum)
 
     @classmethod
-    def by_sha(cls, session, sha1sum):
+    def by_sha256(cls, session, sha256sum):
+        """ Retrieve the files having the specified sha256sum. """
+        query = session.query(cls).filter(cls.sha256sum == sha256sum)
+        return query.all()
+
+    @classmethod
+    def by_sha1(cls, session, sha1sum):
         """ Retrieve the files having the specified sha1sum. """
         query = session.query(cls).filter(cls.sha1sum == sha1sum)
         return query.all()
