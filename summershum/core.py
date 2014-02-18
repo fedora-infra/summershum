@@ -7,21 +7,22 @@ log = logging.getLogger("summershum")
 
 
 def ingest(session, msg, config, force=False):
-    found = summershum.model.File.by_tar_sum(session, msg['md5sum'])
-    if found and not force:
-        log.info("Skipping %r, sum found in the db" % msg.get('filename'))
-        return
-
-    log.info("Ingesting %r" % msg.get('filename'))
-    fedmsg.publish(
-        topic='ingest.start',
-        msg=dict(original=msg),
-    )
-
-    lookaside_url = config['summershum.lookaside']
-    tmpdir = config['summershum.tmpdir']
-
     try:
+        found = summershum.model.File.by_tar_sum(session, msg['md5sum'])
+
+        if found and not force:
+            log.info("Skipping %r, sum found in the db" % msg.get('filename'))
+            return
+
+        log.info("Ingesting %r" % msg.get('filename'))
+        fedmsg.publish(
+            topic='ingest.start',
+            msg=dict(original=msg),
+        )
+
+        lookaside_url = config['summershum.lookaside']
+        tmpdir = config['summershum.tmpdir']
+
         summershum.utils.download_lookaside(msg, lookaside_url, tmpdir)
         summershum.utils.calculate_sums(session, msg, tmpdir)
     except Exception as e:
