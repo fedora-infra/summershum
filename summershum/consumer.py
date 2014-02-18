@@ -1,28 +1,27 @@
 import fedmsg.consumers
-import summershum.utils
+import summershum.core
+
+import logging
+log = logging.getLogger("summershum")
+
 
 class SummerShumConsumer(fedmsg.consumers.FedmsgConsumer):
     topic = 'org.fedoraproject.prod.git.lookaside.new'
-    config_key = 'summershum'
+    config_key = 'summershum.enabled'
+
+    def __init__(self, *args, **kwargs):
+        super(SummerShumConsumer, self).__init__(*args, **kwargs)
+        log.info("Initializing db session")
+        self.session = summershum.utils.create_session(
+            self.hub.config['summershum.sqlalchemy.url'],
+            create=True,
+        )
+        log.info("Ready for ingestion")
 
     def consume(self, msg):
-        fedmsg.publish(
-            topic='ingest.start',
-            msg=dict(original=message['msg']),
+        msg = msg['body']['msg']
+        summershum.core.ingest(
+            session=self.session,
+            msg=msg,
+            config=self.hub.config,
         )
-        try:
-            summershum.utils.download_lookaside(message['msg'])
-            summershum.utils.get_sha1sum(message['msg'])
-        except Exception as e:
-            fedmsg.publish(
-                topic='ingest.fail',
-                msg=dict(
-                    original=message['msg'],
-                    error=str(e),
-                ),
-            )
-        else:
-            fedmsg.publish(
-                topic='ingest.complete',
-                msg=dict(original=message['msg']),
-            )
