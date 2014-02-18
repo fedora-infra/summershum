@@ -43,28 +43,17 @@ class UtilsTest(unittest.TestCase):
         open('root/fold1/fold2/fold4/file6', 'w').close()
         open('root/fold1/fold2.5/file6', 'w').close()
 
+        s1 = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+        s2 = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'
+        s3 = 'd41d8cd98f00b204e9800998ecf8427e'
         exp_list = [
-            ('root/file1',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
-            ('root/fold1/file2',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
-            ('root/fold1/file3',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
-            ('root/fold1/fold2.5/file6',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
-            ('root/fold1/fold2/file4',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
-            ('root/fold1/fold2/fold3/file5',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
-            ('root/fold1/fold2/fold4/file6',
-             'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-             'd41d8cd98f00b204e9800998ecf8427e'),
+            ('root/file1', s1, s2, s3),
+            ('root/fold1/file2', s1, s2, s3),
+            ('root/fold1/file3', s1, s2, s3),
+            ('root/fold1/fold2.5/file6', s1, s2, s3),
+            ('root/fold1/fold2/file4', s1, s2, s3),
+            ('root/fold1/fold2/fold3/file5', s1, s2, s3),
+            ('root/fold1/fold2/fold4/file6', s1, s2, s3),
         ]
 
         # Walk the directory structure
