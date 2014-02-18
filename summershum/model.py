@@ -47,11 +47,17 @@ class File(BASE):
     __tablename__ = 'files'
 
     id = sa.Column(sa.Integer, primary_key=True)
-    pkg_name = sa.Column(sa.Text, index=True, nullable=False)
     filename = sa.Column(sa.Text, nullable=False)
+
+    # This is our primary means of distinguishing files
     sha1sum = sa.Column(sa.String(64), index=True, nullable=True)
+    # We also keep an md5sum in the wild case that there's a sha1 collision.
+    md5sum = sa.Column(sa.String(32), index=True, nullable=True)
+
+    pkg_name = sa.Column(sa.Text, index=True, nullable=False)
     tar_file = sa.Column(sa.Text, nullable=False)
     tar_sum = sa.Column(sa.String(32), index=True, nullable=False)
+
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
@@ -67,6 +73,12 @@ class File(BASE):
     def by_sha(cls, session, sha1sum):
         """ Retrieve the files having the specified sha1sum. """
         query = session.query(cls).filter(cls.sha1sum == sha1sum)
+        return query.all()
+
+    @classmethod
+    def by_md5(cls, session, md5sum):
+        """ Retrieve the files having the specified md5sum. """
+        query = session.query(cls).filter(cls.md5sum == md5sum)
         return query.all()
 
     @classmethod

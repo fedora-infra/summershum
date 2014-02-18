@@ -62,14 +62,15 @@ def get_sha1sum(session, message, tmpdir):
     filename = "/".join([tmpdir, filename])
 
     count, stored = 0, 0
-    for entry in walk_directory(filename):
+    for fname, sha1sum, md5sum in walk_directory(filename):
         count = count + 1
-        pkgobj = File.exists(session, message['md5sum'], entry[0])
+        pkgobj = File.exists(session, message['md5sum'], fname)
         if not pkgobj:
             pkgobj = File(
                 pkg_name=message['name'],
-                filename=entry[0],
-                sha1sum=entry[1],
+                filename=fname,
+                sha1sum=sha1sum,
+                md5sum=md5sum,
                 tar_file=message['filename'],
                 tar_sum=message['md5sum']
             )
@@ -87,7 +88,7 @@ def get_sha1sum(session, message, tmpdir):
 
 
 def walk_directory(directory):
-    """ Return a tuple (filename, sha1) for every files present in the
+    """ Return a tuple (filename, sha1, md5) for every files present in the
     specified folder and do so recursively.
     """
     for root, dirnames, filenames in os.walk(directory):
@@ -95,5 +96,7 @@ def walk_directory(directory):
         for filename in filenames:
             file_path = os.path.join(root, filename)
             with open(file_path) as stream:
-                sha = hashlib.sha1(stream.read()).hexdigest()
-                yield (file_path, sha)
+                contents = stream.read()
+                sha1sum = hashlib.sha1(contents).hexdigest()
+                md5sum = hashlib.md5(contents).hexdigest()
+                yield (file_path, sha1sum, md5sum)
