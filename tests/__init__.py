@@ -63,7 +63,7 @@ class UtilsTest(unittest.TestCase):
         # Walk the directory structure
         obs_list = list(summershum.utils.walk_directory('root'))
 
-        self.assertTrue(exp_list, obs_list)
+        self.assertEqual(exp_list, obs_list)
 
         # Delete the directory structure
         shutil.rmtree('root')
