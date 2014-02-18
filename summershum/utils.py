@@ -64,6 +64,7 @@ def calculate_sums(session, message, tmpdir):
     for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
         count = count + 1
         pkgobj = File.exists(session, message['md5sum'], fname)
+        fname = fname.replace(tmpdir, '')
         if not pkgobj:
             pkgobj = File(
                 pkg_name=message['name'],
