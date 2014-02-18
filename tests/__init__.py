@@ -57,7 +57,7 @@ class UtilsTest(unittest.TestCase):
         ]
 
         # Walk the directory structure
-        obs_list = list(summershum.utils.walk_directory('root'))
+        obs_list = sorted(list(summershum.utils.walk_directory('root')))
 
         self.assertEqual(exp_list, obs_list)
 
