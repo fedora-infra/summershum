@@ -1,14 +1,11 @@
 import hashlib
 import os
-import shutil
-import sys
-import tempfile
 
 import requests
 
 from subprocess import Popen, PIPE
 
-from model import File, create_session
+from model import File
 
 import logging
 log = logging.getLogger("summershum")
