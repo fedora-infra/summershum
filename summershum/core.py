@@ -7,7 +7,7 @@ log = logging.getLogger("summershum")
 
 
 def ingest(session, msg, config, force=False):
-    found = summershum.model.Package.by_pkg_sum(session, msg['md5sum'])
+    found = summershum.model.File.by_tar_sum(session, msg['md5sum'])
     if found and not force:
         log.info("Skipping %r, sum found in the db" % msg.get('filename'))
         return

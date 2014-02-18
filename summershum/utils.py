@@ -7,7 +7,7 @@ import requests
 
 from subprocess import Popen, PIPE
 
-from model import Package, create_session
+from model import File, create_session
 
 import logging
 log = logging.getLogger("summershum")
@@ -64,14 +64,14 @@ def get_sha1sum(session, message, tmpdir):
     count, stored = 0, 0
     for entry in walk_directory(filename):
         count = count + 1
-        pkgobj = Package.exists(session, message['md5sum'], entry[0])
+        pkgobj = File.exists(session, message['md5sum'], entry[0])
         if not pkgobj:
-            pkgobj = Package(
+            pkgobj = File(
                 pkg_name=message['name'],
                 filename=entry[0],
                 sha1sum=entry[1],
-                pkg_file=message['filename'],
-                pkg_sum=message['md5sum']
+                tar_file=message['filename'],
+                tar_sum=message['md5sum']
             )
             session.add(pkgobj)
             stored = stored + 1

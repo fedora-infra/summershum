@@ -40,68 +40,58 @@ def create_session(db_url, alembic_ini=None, debug=False, create=False):
     return scopedsession
 
 
-class Package(BASE):
-    """ The ``packages`` table in the database containing all the sha1sum
+class File(BASE):
+    """ The ``files`` table in the database containing all the sha1sum
     of all the files in all the packages.
     """
-    __tablename__ = 'packages'
+    __tablename__ = 'files'
 
     id = sa.Column(sa.Integer, primary_key=True)
     pkg_name = sa.Column(sa.Text, index=True, nullable=False)
     filename = sa.Column(sa.Text, nullable=False)
     sha1sum = sa.Column(sa.String(64), index=True, nullable=True)
-    pkg_file = sa.Column(sa.Text, nullable=False)
-    pkg_sum = sa.Column(sa.String(32), index=True, nullable=False)
+    tar_file = sa.Column(sa.Text, nullable=False)
+    tar_sum = sa.Column(sa.String(32), index=True, nullable=False)
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
-        sa.UniqueConstraint('pkg_sum', 'filename'),
+        sa.UniqueConstraint('tar_sum', 'filename'),
     )
 
     def __repr__(self):
         """ String representation of that object. """
-        return '<Package(project:%s, file:%s, sha1:%s)>' % (
-            self.pkg_name, self.pkg_file, self.sha1sum)
+        return '<File(tar_file:%s, filename:%s, sha1:%s)>' % (
+            self.tar_file, self.filename, self.sha1sum)
 
     @classmethod
     def by_sha(cls, session, sha1sum):
-        """ Retrieve the packages having the specified sha1sum. """
-        query = session.query(
-            cls
-        ).filter(
-            cls.sha1sum == sha1sum
-        )
+        """ Retrieve the files having the specified sha1sum. """
+        query = session.query(cls).filter(cls.sha1sum == sha1sum)
+        return query.all()
+
+    @classmethod
+    def by_tar_sum(cls, session, tar_sum):
+        """ Retrieves all the files having the specified tar_sum
+        (the md5sum of the whole tarball)
+        """
+        query = session.query(cls).filter(cls.tar_sum == tar_sum)
+        query = query.order_by(cls.pkg_name, cls.tar_file, cls.filename)
 
         return query.all()
 
     @classmethod
-    def by_pkg_sum(cls, session, pkg_sum):
-        """ Retrieves all the entries having the specified pkg_sum (the *sum,
-        md5sum or sha1sum or... of the package, as provided in fedmsg).
-        """
-        query = session.query(
-            cls
-        ).filter(
-            cls.pkg_sum == pkg_sum
-        ).order_by(
-            cls.pkg_name, cls.pkg_file, cls.filename
-        )
+    def exists(cls, session, tar_sum, filename):
+        """ Retrieve the file that has:
 
-        return query.all()
-
-    @classmethod
-    def exists(cls, session, pkg_sum, filename):
-        """ Retrieve the packages having the specified package *sum (md5/sha1),
-        and filename.
+        - a particular tarball md5sum
+        - a particular filename
         """
-        query = session.query(
-            cls
-        ).filter(
-            cls.pkg_sum == pkg_sum
+        query = session.query(cls).filter(
+            cls.tar_sum == tar_sum
         ).filter(
             cls.filename == filename
         ).order_by(
-            cls.pkg_name, cls.pkg_file, cls.filename
+            cls.pkg_name, cls.tar_file, cls.filename
         )
 
         return query.first()
