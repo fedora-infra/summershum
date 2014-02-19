@@ -7,7 +7,13 @@ import summershum.core
 import summershum.model
 
 import logging
-import logging.config
+try:
+    # Python2.7 and later
+    from logging.config import dictConfig
+except ImportError:
+    # For Python2.6, we rely on a third party module.
+    from logutils.dictconfig import dictConfig
+
 
 log = logging.getLogger("summershum")
 
@@ -46,7 +52,7 @@ def main():
         'active': True,
     })
 
-    logging.config.dictConfig(config.get('logging', {'version': 1}))
+    dictConfig(config.get('logging', {'version': 1}))
     log.info("Starting summershum ingestion")
 
     fedmsg.init(**config)
