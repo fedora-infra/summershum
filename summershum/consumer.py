@@ -1,5 +1,6 @@
 import fedmsg.consumers
 import summershum.core
+import summershum.model
 
 import logging
 log = logging.getLogger("summershum")
@@ -12,7 +13,7 @@ class SummerShumConsumer(fedmsg.consumers.FedmsgConsumer):
     def __init__(self, *args, **kwargs):
         super(SummerShumConsumer, self).__init__(*args, **kwargs)
         log.info("Initializing db session")
-        self.session = summershum.utils.create_session(
+        self.session = summershum.model.create_session(
             self.hub.config['summershum.sqlalchemy.url'],
             create=True,
         )

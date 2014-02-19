@@ -4,7 +4,7 @@ import json
 import fedmsg.config
 
 import summershum.core
-import summershum.utils
+import summershum.model
 
 import logging
 import logging.config
@@ -51,7 +51,7 @@ def main():
 
     fedmsg.init(**config)
 
-    session = summershum.utils.create_session(
+    session = summershum.model.create_session(
         config['summershum.sqlalchemy.url'],
         create=True,
     )
