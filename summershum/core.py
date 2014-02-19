@@ -3,10 +3,14 @@ import summershum.model
 
 import fedmsg
 import logging
+import tempfile
+import os
+import shutil
 log = logging.getLogger("summershum")
 
 
 def ingest(session, msg, config, force=False):
+    tmpdir = tempfile.mkdtemp()
     try:
         found = summershum.model.File.by_tar_sum(session, msg['md5sum'])
 
@@ -21,7 +25,6 @@ def ingest(session, msg, config, force=False):
         )
 
         lookaside_url = config['summershum.lookaside']
-        tmpdir = config['summershum.tmpdir']
 
         summershum.utils.download_lookaside(msg, lookaside_url, tmpdir)
         summershum.utils.calculate_sums(session, msg, tmpdir)
@@ -41,3 +44,5 @@ def ingest(session, msg, config, force=False):
             topic='ingest.complete',
             msg=dict(original=msg),
         )
+        if tmpdir and os.path.exists(tmpdir):
+            shutil.rmtree(tmpdir)
