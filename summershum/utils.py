@@ -100,4 +100,4 @@ def walk_directory(directory):
                 sha256sum = hashlib.sha256(contents).hexdigest()
                 sha1sum = hashlib.sha1(contents).hexdigest()
                 md5sum = hashlib.md5(contents).hexdigest()
-                yield (file_path, sha256sum, sha1sum, md5sum)
+                yield (file_path.decode('utf-8'), sha256sum, sha1sum, md5sum)
