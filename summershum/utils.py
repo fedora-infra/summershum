@@ -1,13 +1,11 @@
 import hashlib
 import os
-import shutil
-import sys
 
 import requests
 
 from subprocess import Popen, PIPE
 
-from model import File, create_session
+from model import File
 
 import logging
 log = logging.getLogger("summershum")
@@ -38,6 +36,7 @@ def calculate_sums(session, message, tmpdir):
     and browse the sources of the specified package and for each of the
     files in the sources get their sha256sum, sha1sum, and md5sum.
     """
+
     local_filename = "/".join([tmpdir, message['filename']])
 
     if not os.path.exists(local_filename):
@@ -65,6 +64,7 @@ def calculate_sums(session, message, tmpdir):
     for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
         count = count + 1
         pkgobj = File.exists(session, message['md5sum'], fname)
+        fname = fname.replace(tmpdir, '')
         if not pkgobj:
             pkgobj = File(
                 pkg_name=message['name'],
@@ -81,8 +81,7 @@ def calculate_sums(session, message, tmpdir):
             pass
     session.commit()
 
-    if filename and os.path.exists(filename):
-        shutil.rmtree(filename)
+    if local_filename and os.path.exists(local_filename):
         os.unlink(local_filename)
 
     log.info("Stored %i of %i files" % (stored, count))

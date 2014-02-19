@@ -7,7 +7,6 @@ config = {
     'summershum.sqlalchemy.url': 'sqlite:////var/tmp/summershum.sqlite',
     'summershum.lookaside': 'http://pkgs.fedoraproject.org/lookaside/pkgs/',
     'summershum.datagrepper': 'https://apps.fedoraproject.org/datagrepper/',
-    'summershum.tmpdir': 'downloads',
 
     # Here is where we will publish our status
     'endpoints': {
