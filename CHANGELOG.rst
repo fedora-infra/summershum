@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.1.2
+-----
+
+- Fix an import that never got refactored. `03b06143a <https://github.com/fedora-infra/summershum/commit/03b06143a412e065b3a28db48ef3d3fb910e511c>`_
+- Store our paths as unicode so the db doesn't freak out. `ab0698b13 <https://github.com/fedora-infra/summershum/commit/ab0698b139336ea00300e7cf8578cf13ff4fef2e>`_
+- Ignore dist dir. `f758a3e7e <https://github.com/fedora-infra/summershum/commit/f758a3e7e9c7c70e3c62ff271808606ca7cebd9a>`_
+
 0.1.1
 -----
 
