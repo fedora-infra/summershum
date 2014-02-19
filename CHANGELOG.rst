@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1.3
+-----
+
+- Handle logging dictConfig on el6. `48503340d <https://github.com/fedora-infra/summershum/commit/48503340da04afffa2abe6e25ab160c081bbd5f8>`_
+
 0.1.2
 -----
 

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='summershum',
-    version='0.1.2',
+    version='0.1.3',
     description='fedmsg consumer that extracts hashes of source files',
     author='Pierre-Yves Chibon & Ralph Bean',
     author_email='admin@fedoraproject.org',
