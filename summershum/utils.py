@@ -102,6 +102,9 @@ def walk_directory(directory):
 
         for filename in filenames:
             file_path = os.path.join(root, filename)
+            # We skip the symlink, should we follow them instead?
+            if os.path.islink(file_path):
+                continue
             with open(file_path) as stream:
                 contents = stream.read()
                 sha256sum = hashlib.sha256(contents).hexdigest()
