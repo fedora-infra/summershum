@@ -11,6 +11,7 @@ setup(
     install_requires=[
         "fedmsg",
         "sqlalchemy",
+        "kitchen",
     ],
     packages=[
         'summershum',
