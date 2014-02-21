@@ -1,10 +1,12 @@
 import hashlib
 import os
+import zipfile
 
 import requests
 
 from subprocess import Popen, PIPE
 
+from kitchen.text.converters import to_unicode
 from model import File
 
 import logging
@@ -46,6 +48,12 @@ def calculate_sums(session, message, tmpdir):
     if local_filename.endswith('.gem'):
         return
 
+    if zipfile.is_zipfile(local_filename):
+        if local_filename.endswith('.jar') or local_filename.endswith('.war'):
+            log.warning('Invalid sources uploaded: %r - package: %r' % (
+                local_filename, message.get('name')))
+            return
+
     cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     if proc.returncode:
@@ -54,11 +62,11 @@ def calculate_sums(session, message, tmpdir):
 
     filename = proc.communicate()[0].split('\n')[0].split('/')[0]
 
-    if not filename:
+    if filename:
+        filename = "/".join([tmpdir, filename])
+    else:
         log.warning("No files extracted from %r" % local_filename)
-        return
-
-    filename = "/".join([tmpdir, filename])
+        filename = tmpdir
 
     count, stored = 0, 0
     for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
@@ -95,9 +103,15 @@ def walk_directory(directory):
 
         for filename in filenames:
             file_path = os.path.join(root, filename)
+
+            # We skip the symlink, should we follow them instead?
+            if os.path.islink(file_path):
+                log.warning("File %r is a link - skipping", file_path)
+                continue
+
             with open(file_path) as stream:
                 contents = stream.read()
                 sha256sum = hashlib.sha256(contents).hexdigest()
                 sha1sum = hashlib.sha1(contents).hexdigest()
                 md5sum = hashlib.md5(contents).hexdigest()
-                yield (file_path.decode('utf-8'), sha256sum, sha1sum, md5sum)
+                yield (to_unicode(file_path), sha256sum, sha1sum, md5sum)

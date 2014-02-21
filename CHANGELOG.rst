@@ -1,6 +1,23 @@
 Changelog
 =========
 
+0.1.4
+-----
+
+- When ingesting a new source file, indicate the package concerned `e7e8189ba <https://github.com/fedora-infra/summershum/commit/e7e8189ba1d2005ae8aa56261aaa9beaa01f45bc>`_
+- Fix typo in the log message `4af49902f <https://github.com/fedora-infra/summershum/commit/4af49902f82d067b10d8c25ae44cc9ebf0907d4e>`_
+- Log when someone uploads a .jar or a .war file `1951a334a <https://github.com/fedora-infra/summershum/commit/1951a334a535f51b49baf3d85b247773f0d0a135>`_
+- Skip symlink `ceefab8cf <https://github.com/fedora-infra/summershum/commit/ceefab8cf36accf2dc4c17a660ef5b6b2c683fb2>`_
+- Log when we skip a file because it's a link `ad410542c <https://github.com/fedora-infra/summershum/commit/ad410542c58ad5373b9062df38738491ffb9a95e>`_
+- Merge pull request #17 from fedora-infra/feature/log_more_detail `b2dfb8138 <https://github.com/fedora-infra/summershum/commit/b2dfb813877546c0475b8f9273d789da289481dd>`_
+- Merge pull request #18 from fedora-infra/feature/handle_jar_war `7a40e15e3 <https://github.com/fedora-infra/summershum/commit/7a40e15e3971a7297c76edfc1ac88290aab2b0b9>`_
+- Merge pull request #19 from fedora-infra/feature/handle_symlink `8bc52cdd5 <https://github.com/fedora-infra/summershum/commit/8bc52cdd5dbd3851c08bf0b96fd902f443cd08e8>`_
+- Make warning messages out of those. `0da3933c9 <https://github.com/fedora-infra/summershum/commit/0da3933c9075dd5ce0254d3217966fafbe4fd3c6>`_
+- Disable the summershum.start message since its just so spammy. `248391f5b <https://github.com/fedora-infra/summershum/commit/248391f5b228cd2126882565f2b6aa4dc3d016c4>`_
+- Add spaces for readability. `53b962a60 <https://github.com/fedora-infra/summershum/commit/53b962a60d3809758c3f04cff5b2e91aaa960560>`_
+- Use kitchen to_unicode.  Fixes #12. `fc3067c6a <https://github.com/fedora-infra/summershum/commit/fc3067c6aa6edd4c5baee4f717cc0700f29802e7>`_
+- Actually ingest files that are not archives (like bare pdfs).  Fixes #10. `ed61a77e5 <https://github.com/fedora-infra/summershum/commit/ed61a77e5f395a778498446ec363b7e0e88c91a0>`_
+
 0.1.3
 -----
 

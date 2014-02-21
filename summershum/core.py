@@ -18,11 +18,14 @@ def ingest(session, msg, config, force=False):
             log.info("Skipping %r, sum found in the db" % msg.get('filename'))
             return
 
-        log.info("Ingesting %r" % msg.get('filename'))
-        fedmsg.publish(
-            topic='ingest.start',
-            msg=dict(original=msg),
-        )
+        log.info("Ingesting %r - package: %r" % (
+            msg.get('filename'), msg.get('name')))
+
+        # This ends up just being spammy on the bus when we run the cli.
+        #fedmsg.publish(
+        #    topic='ingest.start',
+        #    msg=dict(original=msg),
+        #)
 
         lookaside_url = config['summershum.lookaside']
 
