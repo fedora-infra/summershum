@@ -20,10 +20,12 @@ def ingest(session, msg, config, force=False):
 
         log.info("Ingesting %r - package: %r" % (
             msg.get('filename'), msg.get('name')))
-        fedmsg.publish(
-            topic='ingest.start',
-            msg=dict(original=msg),
-        )
+
+        # This ends up just being spammy on the bus when we run the cli.
+        #fedmsg.publish(
+        #    topic='ingest.start',
+        #    msg=dict(original=msg),
+        #)
 
         lookaside_url = config['summershum.lookaside']
 
