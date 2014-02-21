@@ -1,5 +1,6 @@
 import hashlib
 import os
+import zipfile
 
 import requests
 
@@ -45,6 +46,12 @@ def calculate_sums(session, message, tmpdir):
     # FIXME: support gems
     if local_filename.endswith('.gem'):
         return
+
+    if zipfile.is_zipfile(local_filename):
+        if local_filename.endswith('.jar') or local_filename.endswith('.war'):
+            log.debug('Invalid sources uploaded: %r - package: %r' % (
+                local_filename, message.get('name')))
+            return
 
     cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
