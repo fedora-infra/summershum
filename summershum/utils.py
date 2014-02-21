@@ -49,7 +49,7 @@ def calculate_sums(session, message, tmpdir):
 
     if zipfile.is_zipfile(local_filename):
         if local_filename.endswith('.jar') or local_filename.endswith('.war'):
-            log.debug('Invalid sources uploaded: %r - package: %r' % (
+            log.warning('Invalid sources uploaded: %r - package: %r' % (
                 local_filename, message.get('name')))
             return
 
@@ -104,7 +104,7 @@ def walk_directory(directory):
             file_path = os.path.join(root, filename)
             # We skip the symlink, should we follow them instead?
             if os.path.islink(file_path):
-                log.info("File %r is a link - skipping", file_path)
+                log.warning("File %r is a link - skipping", file_path)
                 continue
             with open(file_path) as stream:
                 contents = stream.read()
