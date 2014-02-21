@@ -104,6 +104,7 @@ def walk_directory(directory):
             file_path = os.path.join(root, filename)
             # We skip the symlink, should we follow them instead?
             if os.path.islink(file_path):
+                log.info("File %r is a link - skipping", file_path)
                 continue
             with open(file_path) as stream:
                 contents = stream.read()
