@@ -62,11 +62,11 @@ def calculate_sums(session, message, tmpdir):
 
     filename = proc.communicate()[0].split('\n')[0].split('/')[0]
 
-    if not filename:
+    if filename:
+        filename = "/".join([tmpdir, filename])
+    else:
         log.warning("No files extracted from %r" % local_filename)
-        return
-
-    filename = "/".join([tmpdir, filename])
+        filename = tmpdir
 
     count, stored = 0, 0
     for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
