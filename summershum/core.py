@@ -18,7 +18,8 @@ def ingest(session, msg, config, force=False):
             log.info("Skipping %r, sum found in the db" % msg.get('filename'))
             return
 
-        log.info("Ingesting %r" % msg.get('filename'))
+        log.info("Ingesting %r - package: %r" % (
+            msg.get('filename'), msg.get(''name')))
         fedmsg.publish(
             topic='ingest.start',
             msg=dict(original=msg),
