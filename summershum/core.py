@@ -19,7 +19,7 @@ def ingest(session, msg, config, force=False):
             return
 
         log.info("Ingesting %r - package: %r" % (
-            msg.get('filename'), msg.get(''name')))
+            msg.get('filename'), msg.get('name')))
         fedmsg.publish(
             topic='ingest.start',
             msg=dict(original=msg),
