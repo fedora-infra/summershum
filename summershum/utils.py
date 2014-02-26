@@ -23,7 +23,7 @@ def download_lookaside(message, lookaside_url, tmpdir):
         }
     )
 
-    local_filename = "/".join([tmpdir, message['filename']])
+    local_filename = os.path.join(tmpdir, message['filename'])
 
     req = requests.get(url, stream=True)
     with open(local_filename, 'wb') as stream:
@@ -39,7 +39,7 @@ def calculate_sums(session, message, tmpdir):
     files in the sources get their sha256sum, sha1sum, and md5sum.
     """
 
-    local_filename = "/".join([tmpdir, message['filename']])
+    local_filename = os.path.join(tmpdir, message['filename'])
 
     if not os.path.exists(local_filename):
         raise IOError('File %s not found' % local_filename)
@@ -71,7 +71,7 @@ def calculate_sums(session, message, tmpdir):
     filename = proc.communicate()[0].split('\n')[0].split('/')[0]
 
     if filename:
-        filename = "/".join([tmpdir, filename])
+        filename = os.path.join(tmpdir, filename)
     else:
         log.warning("No files extracted from %r" % local_filename)
         filename = tmpdir
