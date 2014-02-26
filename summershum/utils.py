@@ -23,7 +23,7 @@ def download_lookaside(message, lookaside_url, tmpdir):
         }
     )
 
-    local_filename = "/".join([tmpdir, message['filename']])
+    local_filename = os.path.join(tmpdir, message['filename'])
 
     req = requests.get(url, stream=True)
     with open(local_filename, 'wb') as stream:
@@ -39,14 +39,21 @@ def calculate_sums(session, message, tmpdir):
     files in the sources get their sha256sum, sha1sum, and md5sum.
     """
 
-    local_filename = "/".join([tmpdir, message['filename']])
+    local_filename = os.path.join(tmpdir, message['filename'])
 
     if not os.path.exists(local_filename):
         raise IOError('File %s not found' % local_filename)
 
-    # FIXME: support gems
     if local_filename.endswith('.gem'):
-        return
+        cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
+        proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        proc.communicate()
+        # Remove not-used files
+        os.unlink(os.path.join(tmpdir, 'metadata.gz'))
+        os.unlink(os.path.join(tmpdir, 'checksums.yaml.gz'))
+        # Remove original sources - we only keep the data archive
+        os.unlink(local_filename)
+        local_filename = os.path.join(tmpdir, 'data.tar.gz')
 
     if zipfile.is_zipfile(local_filename):
         if local_filename.endswith('.jar') or local_filename.endswith('.war'):
@@ -60,13 +67,22 @@ def calculate_sums(session, message, tmpdir):
         raise IOError(
             'Something went wrong when extracting %s' % local_filename)
 
-    filename = proc.communicate()[0].split('\n')[0].split('/')[0]
-
-    if filename:
-        filename = "/".join([tmpdir, filename])
+    filename = proc.communicate()[0].split('\n')
+    # output from zip archives
+    if 'Archive:' in filename[0] and 'creating:' in filename[1]:
+        filename = filename[1].split('creating:')[1].strip()
     else:
-        log.warning("No files extracted from %r" % local_filename)
+        filename = filename[0]
+
+    if filename and '/' in filename:
+        filename = filename.split('/')[0]
+        filename = os.path.join(tmpdir, filename)
+    else:
+        log.warning("No folder extracted from %r" % local_filename)
         filename = tmpdir
+
+    if local_filename and os.path.exists(local_filename):
+        os.unlink(local_filename)
 
     count, stored = 0, 0
     for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
@@ -88,9 +104,6 @@ def calculate_sums(session, message, tmpdir):
         else:
             pass
     session.commit()
-
-    if local_filename and os.path.exists(local_filename):
-        os.unlink(local_filename)
 
     log.info("Stored %i of %i files" % (stored, count))
 
