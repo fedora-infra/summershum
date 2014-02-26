@@ -20,9 +20,11 @@ class SummerShumConsumer(fedmsg.consumers.FedmsgConsumer):
         log.info("Ready for ingestion")
 
     def consume(self, msg):
+        msg_id = msg['body'].get('msg_id', None)
         msg = msg['body']['msg']
         summershum.core.ingest(
             session=self.session,
             msg=msg,
             config=self.hub.config,
+            msg_id=msg_id,
         )

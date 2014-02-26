@@ -70,4 +70,5 @@ def main():
             session=session,
             msg=msg,
             config=config,
+            msg_id=message.get('msg_id', None),
         )
