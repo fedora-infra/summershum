@@ -77,6 +77,9 @@ def calculate_sums(session, message, tmpdir):
         log.warning("No folder extracted from %r" % local_filename)
         filename = tmpdir
 
+    if local_filename and os.path.exists(local_filename):
+        os.unlink(local_filename)
+
     count, stored = 0, 0
     for fname, sha256sum, sha1sum, md5sum in walk_directory(filename):
         count = count + 1
@@ -97,9 +100,6 @@ def calculate_sums(session, message, tmpdir):
         else:
             pass
     session.commit()
-
-    if local_filename and os.path.exists(local_filename):
-        os.unlink(local_filename)
 
     log.info("Stored %i of %i files" % (stored, count))
 
