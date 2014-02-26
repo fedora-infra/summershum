@@ -9,7 +9,7 @@ import shutil
 log = logging.getLogger("summershum")
 
 
-def ingest(session, msg, config, force=False):
+def ingest(session, msg, config, msg_id=None, force=False):
     tmpdir = tempfile.mkdtemp()
     try:
         found = summershum.model.File.by_tar_sum(session, msg['md5sum'])
@@ -18,8 +18,8 @@ def ingest(session, msg, config, force=False):
             log.info("Skipping %r, sum found in the db" % msg.get('filename'))
             return
 
-        log.info("Ingesting %r - package: %r" % (
-            msg.get('filename'), msg.get('name')))
+        log.info("Ingesting %r - package: %r - msg_id: %r" % (
+            msg.get('filename'), msg.get('name'), msg_id))
 
         # This ends up just being spammy on the bus when we run the cli.
         #fedmsg.publish(
