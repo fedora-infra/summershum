@@ -68,12 +68,13 @@ def calculate_sums(session, message, tmpdir):
         raise IOError(
             'Something went wrong when extracting %s' % local_filename)
 
-    filename = proc.communicate()[0].split('\n')[0].split('/')[0]
+    filename = proc.communicate()[0].split('\n')[0]
 
-    if filename:
+    if filename and '/' in filename:
+        filename = filename.split('/')[0]
         filename = os.path.join(tmpdir, filename)
     else:
-        log.warning("No files extracted from %r" % local_filename)
+        log.warning("No folder extracted from %r" % local_filename)
         filename = tmpdir
 
     count, stored = 0, 0
