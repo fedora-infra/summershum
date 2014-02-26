@@ -2,6 +2,7 @@ import hashlib
 import os
 import zipfile
 
+import fedmsg
 import requests
 
 from subprocess import Popen, PIPE
@@ -59,6 +60,10 @@ def calculate_sums(session, message, tmpdir):
         if local_filename.endswith('.jar') or local_filename.endswith('.war'):
             log.warning('Invalid sources uploaded: %r - package: %r' % (
                 local_filename, message.get('name')))
+            fedmsg.publish(
+                topic='invalid.file.found',
+                msg=dict(original=msg),
+            )
             return
 
     cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
