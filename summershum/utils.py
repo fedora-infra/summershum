@@ -46,7 +46,15 @@ def calculate_sums(session, message, tmpdir):
 
     # FIXME: support gems
     if local_filename.endswith('.gem'):
-        return
+        cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
+        proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        proc.communicate()
+        # Remove not-used files
+        os.unlink(os.path.join(tmpdir, 'metadata.gz'))
+        os.unlink(os.path.join(tmpdir, 'checksums.yaml.gz'))
+        # Remove original sources - we only keep the data archive
+        os.unlink(local_filename)
+        local_filename = os.path.join(tmpdir, 'data.tar.gz')
 
     if zipfile.is_zipfile(local_filename):
         if local_filename.endswith('.jar') or local_filename.endswith('.war'):
