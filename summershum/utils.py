@@ -44,7 +44,6 @@ def calculate_sums(session, message, tmpdir):
     if not os.path.exists(local_filename):
         raise IOError('File %s not found' % local_filename)
 
-    # FIXME: support gems
     if local_filename.endswith('.gem'):
         cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
         proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
