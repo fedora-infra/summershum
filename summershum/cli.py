@@ -1,3 +1,4 @@
+import optparse
 import requests
 import json
 
@@ -45,7 +46,33 @@ def __get_messages(datagrepper_url):
             yield message
 
 
+def __get_message(datagrepper_url, msg_id):
+    """ Retrieves a specified messages from datagrepper. """
+
+    param = {
+        'id': msg_id,
+    }
+
+    response = requests.get(datagrepper_url + 'id/', params=param)
+    data = json.loads(response.text)
+
+    yield data
+
+
+def parse_args():
+    parser = optparse.OptionParser()
+    parser.add_option("--id", dest="msg_id", default=None,
+                      help="Process the specified message")
+    parser.add_option("--force", dest="force", default=False,
+                       action="store_true",
+                       help="Force processing the sources even if the database"
+                           "already knows it")
+
+    return parser.parse_args()
+
 def main():
+    opts, args = parse_args()
+
     config = fedmsg.config.load_config()
     config.update({
         'name': 'relay_inbound',
@@ -63,7 +90,10 @@ def main():
     )
 
     datagrepper_url = config['summershum.datagrepper']
-    messages = __get_messages(datagrepper_url)
+    if opts.msg_id:
+        messages = __get_message(datagrepper_url, opts.msg_id)
+    else:
+        messages = __get_messages(datagrepper_url)
     for message in messages:
         msg = message['msg']
         summershum.core.ingest(
@@ -71,4 +101,5 @@ def main():
             msg=msg,
             config=config,
             msg_id=message.get('msg_id', None),
+            force=opts.force,
         )
