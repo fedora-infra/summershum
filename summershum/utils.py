@@ -67,7 +67,12 @@ def calculate_sums(session, message, tmpdir):
         raise IOError(
             'Something went wrong when extracting %s' % local_filename)
 
-    filename = proc.communicate()[0].split('\n')[0]
+    filename = proc.communicate()[0].split('\n')
+    # output from zip archives
+    if 'Archive:' in filename[0] and 'creating:' in filename[1]:
+        filename = filename[1].split('creating:')[1].strip()
+    else:
+        filename = filename[0]
 
     if filename and '/' in filename:
         filename = filename.split('/')[0]
