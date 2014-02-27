@@ -1,6 +1,26 @@
 Changelog
 =========
 
+0.1.5
+-----
+
+- Add supports for gem archives `ef32e0c49 <https://github.com/fedora-infra/summershum/commit/ef32e0c49e6da8bde83c9d340722fd0918b395ea>`_
+- Use os.path.join to join multiple element in one single path `9afe50f44 <https://github.com/fedora-infra/summershum/commit/9afe50f440d40855438b5d82ad7a91440692c271>`_
+- Check that the filename retrieved points to a directory `d1887eff1 <https://github.com/fedora-infra/summershum/commit/d1887eff1d2cbb43814cbb4aea681479dc021bd2>`_
+- Remove the archive before browsing the extracted files `cbd6bec16 <https://github.com/fedora-infra/summershum/commit/cbd6bec16c6318fe01b1115dcb5bea7181475090>`_
+- Remove FIXME now that we fixed it `b824459e6 <https://github.com/fedora-infra/summershum/commit/b824459e6a554addc06f8a8e4b6857da35a14fe4>`_
+- Fix figuring out the folder name for zip archive `8c452ba03 <https://github.com/fedora-infra/summershum/commit/8c452ba037242225649d88bead25fa6cbf919533>`_
+- Merge pull request #25 from fedora-infra/feature/gems `a6bfbbca8 <https://github.com/fedora-infra/summershum/commit/a6bfbbca88870e2c64bf67a862e367cf315f2276>`_
+- Specify what is the msg_id of the message being processed in the logs `cb307ad87 <https://github.com/fedora-infra/summershum/commit/cb307ad874240f311a8ccec602ac51387622f335>`_
+- Merge pull request #26 from fedora-infra/feature/msg_id `43e7ae125 <https://github.com/fedora-infra/summershum/commit/43e7ae1250346a43e1d4c54bf3111ffd4da6eb8b>`_
+- Add the possibility to process a specific message by giving its msg_id to the cli `d57974cea <https://github.com/fedora-infra/summershum/commit/d57974cea9cc92d0409e739490cd097a9c2e20b6>`_
+- Publish a message on the fedmsg bus when encountering an invalid file `6c0039df7 <https://github.com/fedora-infra/summershum/commit/6c0039df74a2de7df80b8729848bb394522e6f5a>`_
+- Include the invalid files into the ``ingest.complete`` message `7f50f5121 <https://github.com/fedora-infra/summershum/commit/7f50f512184dce298f10f92e3a627de6110b4f7f>`_
+- Use a single function __get_messages whether there are several or just one message to retrieve `1e8a05083 <https://github.com/fedora-infra/summershum/commit/1e8a050837168ad6ac64780a1b91110f38d1fd34>`_
+- pep8 fixes `0512cca39 <https://github.com/fedora-infra/summershum/commit/0512cca396ab827720567a768ee8b6a3f931647f>`_
+- Merge pull request #27 from fedora-infra/feature/cli_msg_id `767103cc4 <https://github.com/fedora-infra/summershum/commit/767103cc4d44160ad7e2e4898348a9f3f6e30f61>`_
+- Merge pull request #23 from fedora-infra/feature/fedmsg_invalid_files `bc03a4db8 <https://github.com/fedora-infra/summershum/commit/bc03a4db89b34f733f8e1f6edf8ac7ac242574b3>`_
+
 0.1.4
 -----
 
