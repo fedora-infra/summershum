@@ -49,9 +49,13 @@ def calculate_sums(session, message, tmpdir):
         cmd = ['rpmdev-extract', '-C', tmpdir, local_filename]
         proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
         proc.communicate()
+
         # Remove not-used files
-        os.unlink(os.path.join(tmpdir, 'metadata.gz'))
-        os.unlink(os.path.join(tmpdir, 'checksums.yaml.gz'))
+        for gem_gz in ['metadata.gz', 'checksums.yaml.gz']:
+            gem_gz = os.path.join(tmpdir, gem_gz)
+            if os.path.exists(gem_gz):
+                os.unlink(gem_gz)
+
         # Remove original sources - we only keep the data archive
         os.unlink(local_filename)
         local_filename = os.path.join(tmpdir, 'data.tar.gz')
