@@ -37,8 +37,8 @@ def __get_messages(datagrepper_url, msg_id=None):
 
     if msg_id:
         param = {
-                    'id': msg_id,
-                    }
+            'id': msg_id,
+        }
 
         response = requests.get(datagrepper_url + 'id/', params=param)
         data = json.loads(response.text)
@@ -51,7 +51,8 @@ def __get_messages(datagrepper_url, msg_id=None):
         pages = data['pages']
 
         for page in range(1, pages+1):
-            log.info("Requesting page %i of %i from datagrepper" % (page, pages))
+            log.info("Requesting page %i of %i from datagrepper" %
+                     (page, pages))
             data = _load_page(page)
             for message in data['raw_messages']:
                 yield message
@@ -62,11 +63,12 @@ def parse_args():
     parser.add_option("--id", dest="msg_id", default=None,
                       help="Process the specified message")
     parser.add_option("--force", dest="force", default=False,
-                       action="store_true",
-                       help="Force processing the sources even if the database"
+                      action="store_true",
+                      help="Force processing the sources even if the database"
                            "already knows it")
 
     return parser.parse_args()
+
 
 def main():
     opts, args = parse_args()
