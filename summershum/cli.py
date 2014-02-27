@@ -1,3 +1,4 @@
+import optparse
 import requests
 import json
 
@@ -18,7 +19,7 @@ except ImportError:
 log = logging.getLogger("summershum")
 
 
-def __get_messages(datagrepper_url):
+def __get_messages(datagrepper_url, msg_id=None):
     """ Retrieves git.lookaside.new messages from datagrepper. """
 
     rows_per_page = 10
@@ -34,18 +35,44 @@ def __get_messages(datagrepper_url):
         response = requests.get(datagrepper_url + 'raw/', params=param)
         return json.loads(response.text)
 
-    # Make an initial query just to get the number of pages
-    data = _load_page(page=1)
-    pages = data['pages']
+    if msg_id:
+        param = {
+            'id': msg_id,
+        }
 
-    for page in range(1, pages+1):
-        log.info("Requesting page %i of %i from datagrepper" % (page, pages))
-        data = _load_page(page)
-        for message in data['raw_messages']:
-            yield message
+        response = requests.get(datagrepper_url + 'id/', params=param)
+        data = json.loads(response.text)
+
+        yield data
+
+    else:
+        # Make an initial query just to get the number of pages
+        data = _load_page(page=1)
+        pages = data['pages']
+
+        for page in range(1, pages+1):
+            log.info("Requesting page %i of %i from datagrepper" %
+                     (page, pages))
+            data = _load_page(page)
+            for message in data['raw_messages']:
+                yield message
+
+
+def parse_args():
+    parser = optparse.OptionParser()
+    parser.add_option("--id", dest="msg_id", default=None,
+                      help="Process the specified message")
+    parser.add_option("--force", dest="force", default=False,
+                      action="store_true",
+                      help="Force processing the sources even if the database"
+                           "already knows it")
+
+    return parser.parse_args()
 
 
 def main():
+    opts, args = parse_args()
+
     config = fedmsg.config.load_config()
     config.update({
         'name': 'relay_inbound',
@@ -63,7 +90,7 @@ def main():
     )
 
     datagrepper_url = config['summershum.datagrepper']
-    messages = __get_messages(datagrepper_url)
+    messages = __get_messages(datagrepper_url, opts.msg_id)
     for message in messages:
         msg = message['msg']
         summershum.core.ingest(
@@ -71,4 +98,5 @@ def main():
             msg=msg,
             config=config,
             msg_id=message.get('msg_id', None),
+            force=opts.force,
         )
