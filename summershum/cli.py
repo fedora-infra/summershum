@@ -1,4 +1,4 @@
-import optparse
+import argparse
 import requests
 import json
 
@@ -59,10 +59,10 @@ def __get_messages(datagrepper_url, msg_id=None):
 
 
 def parse_args():
-    parser = optparse.OptionParser()
-    parser.add_option("--id", dest="msg_id", default=None,
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--id", dest="msg_id", default=None,
                       help="Process the specified message")
-    parser.add_option("--force", dest="force", default=False,
+    parser.add_argument("--force", dest="force", default=False,
                       action="store_true",
                       help="Force processing the sources even if the database"
                            "already knows it")
