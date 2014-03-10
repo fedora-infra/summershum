@@ -71,7 +71,7 @@ def parse_args():
 
 
 def main():
-    opts, args = parse_args()
+    opts = parse_args()
 
     config = fedmsg.config.load_config()
     config.update({
