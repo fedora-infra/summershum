@@ -15,12 +15,14 @@ config = {
         ],
     },
     'logging': {
-        'loggers': {
-            'summershum': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-                'propagate': False
+        'version': 1,
+            'loggers': {
+                'summershum': {
+                    'handlers': ['console'],
+                    'level': 'DEBUG',
+                    'propagate': False
             },
         },
     },
 }
+
