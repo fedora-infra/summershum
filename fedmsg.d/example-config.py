@@ -16,11 +16,11 @@ config = {
     },
     'logging': {
         'version': 1,
-            'loggers': {
-                'summershum': {
-                    'handlers': ['console'],
-                    'level': 'DEBUG',
-                    'propagate': False
+        'loggers': {
+            'summershum': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False
             },
         },
     },
