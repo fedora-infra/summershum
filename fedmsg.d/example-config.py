@@ -15,6 +15,7 @@ config = {
         ],
     },
     'logging': {
+        'version': 1,
         'loggers': {
             'summershum': {
                 'handlers': ['console'],
@@ -24,3 +25,4 @@ config = {
         },
     },
 }
+
