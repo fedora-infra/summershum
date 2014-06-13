@@ -103,6 +103,13 @@ class File(BASE):
         return query.all()
 
     @classmethod
+    def by_package(cls, session, pkg_name):
+        """ Retrieve the files having the specified package name. """
+        query = session.query(cls).filter(cls.pkg_name == pkg_name)
+
+        return query.all()
+
+    @classmethod
     def exists(cls, session, tar_sum, filename):
         """ Retrieve the file that has:
 
