@@ -127,3 +127,10 @@ class File(BASE):
         return query.first()
 
     get = exists
+
+    @classmethod
+    def packages(cls, session):
+        """ Returns a list of all packages """
+        query = session.query(cls.pkg_name).group_by(cls.pkg_name)
+
+        return query.all()
