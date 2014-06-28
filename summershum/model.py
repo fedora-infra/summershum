@@ -110,6 +110,13 @@ class File(BASE):
         return query.all()
 
     @classmethod
+    def by_tar_file(cls, session, tar_file):
+        """ Retrieve the files having the specified tar_file. """
+        query = session.query(cls).filter(cls.tar_file == tar_file)
+
+        return query.all()
+ 
+    @classmethod
     def exists(cls, session, tar_sum, filename):
         """ Retrieve the file that has:
 
