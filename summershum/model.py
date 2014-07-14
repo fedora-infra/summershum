@@ -145,6 +145,6 @@ class File(BASE):
     @classmethod
     def get_all_packages(cls, session):
         """ Returns a list of all packages """
-        query = session.query(cls.pkg_name).group_by(cls.pkg_name)
+        query = session.query(cls.pkg_name).group_by(cls.pkg_name).order_by(cls.pkg_name)
 
         return query.all()
