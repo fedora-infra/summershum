@@ -143,8 +143,35 @@ class File(BASE):
     get = exists
 
     @classmethod
-    def get_all_packages(cls, session):
+    def get_all_packages(cls, session, limit=None, count=False, page=None):
         """ Returns a list of all packages """
+
+        if limit is not None:
+            try:
+                limit = abs(int(limit))
+            except ValueError:
+                raise PkgdbException('Wrong limit provided')
+
+        if page is not None:
+            try:
+                page = abs(int(page))
+            except ValueError:
+                raise PkgdbException('Wrong page provided')
+
+        if page is not None and page > 0 and limit is not None and limit > 0:
+            page = (page - 1) * limit
+
         query = session.query(cls.pkg_name).group_by(cls.pkg_name).order_by(cls.pkg_name)
+
+        offset = page
+
+        if count:
+            return query.count()
+
+        if limit:
+            query = query.limit(limit)
+
+        if offset:
+            query = query.offset(offset)
 
         return query.all()
