@@ -143,8 +143,11 @@ class File(BASE):
     get = exists
 
     @classmethod
-    def get_all_packages(cls, session, limit=None, count=False, page=None):
+    def get_all_packages(cls, session, pattern, limit=None, count=False, page=None):
         """ Returns a list of all packages """
+
+        if '*' in pattern:
+            pattern = pattern.replace('*', '%')
 
         if limit is not None:
             try:
@@ -161,7 +164,13 @@ class File(BASE):
         if page is not None and page > 0 and limit is not None and limit > 0:
             page = (page - 1) * limit
 
-        query = session.query(cls.pkg_name).group_by(cls.pkg_name).order_by(cls.pkg_name)
+        query = session.query(
+            sa.func.distinct(cls.pkg_name)
+        ).filter(
+            cls.pkg_name.like(pattern)
+        ).order_by(
+            cls.pkg_name
+        )
 
         offset = page
 
@@ -175,3 +184,4 @@ class File(BASE):
             query = query.offset(offset)
 
         return query.all()
+
