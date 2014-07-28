@@ -40,6 +40,15 @@ def create_session(db_url, alembic_ini=None, debug=False, create=False):
     return scopedsession
 
 
+class Package(BASE):
+    """ The ``packages`` table stores the name of the different packages
+    for which we store file name/hash.
+    """
+    __tablename__ = 'packages'
+
+    pkg_name = sa.Column(sa.Text, primary_key=True)
+
+
 class File(BASE):
     """ The ``files`` table in the database containing all the sha256sum
     of all the files in all the packages.
@@ -55,7 +64,11 @@ class File(BASE):
     sha1sum = sa.Column(sa.String(40), index=True, nullable=True)
     md5sum = sa.Column(sa.String(32), index=True, nullable=True)
 
-    pkg_name = sa.Column(sa.Text, index=True, nullable=False)
+    pkg_name = sa.Column(
+        sa.Text,
+        sa.ForeignKey('Package.pkg_name', onupdate='CASCADE'),
+        nullable=False,
+        index=True)
     tarball = sa.Column(sa.Text, nullable=False)
 
     # For now, this is an md5 handed to us by another application, so it need
