@@ -66,7 +66,7 @@ class File(BASE):
 
     pkg_name = sa.Column(
         sa.Text,
-        sa.ForeignKey('Package.pkg_name', onupdate='CASCADE'),
+        sa.ForeignKey('package.pkg_name', onupdate='CASCADE'),
         nullable=False,
         index=True)
     tarball = sa.Column(sa.Text, nullable=False)
