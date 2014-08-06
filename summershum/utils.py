@@ -101,7 +101,7 @@ def calculate_sums(session, message, tmpdir):
                 sha256sum=sha256sum,
                 sha1sum=sha1sum,
                 md5sum=md5sum,
-                tar_file=message['filename'],
+                tarball=message['filename'],
                 tar_sum=message['md5sum']
             )
             session.add(pkgobj)
