@@ -56,7 +56,7 @@ class File(BASE):
     md5sum = sa.Column(sa.String(32), index=True, nullable=True)
 
     pkg_name = sa.Column(sa.Text, index=True, nullable=False)
-    tar_file = sa.Column(sa.Text, nullable=False)
+    tarball = sa.Column(sa.Text, nullable=False)
 
     # For now, this is an md5 handed to us by another application, so it need
     # only be 32 bits.  But in the future we'd like to move to a more modern
@@ -71,8 +71,8 @@ class File(BASE):
 
     def __repr__(self):
         """ String representation of that object. """
-        return '<File(tar_file:%s, filename:%s, sha256:%s)>' % (
-            self.tar_file, self.filename, self.sha256sum)
+        return '<File(tarball:%s, filename:%s, sha256:%s)>' % (
+            self.tarball, self.filename, self.sha256sum)
 
     @classmethod
     def by_sha256(cls, session, sha256sum):
@@ -98,7 +98,7 @@ class File(BASE):
         (the md5sum of the whole tarball)
         """
         query = session.query(cls).filter(cls.tar_sum == tar_sum)
-        query = query.order_by(cls.pkg_name, cls.tar_file, cls.filename)
+        query = query.order_by(cls.pkg_name, cls.tarball, cls.filename)
 
         return query.all()
 
@@ -110,9 +110,9 @@ class File(BASE):
         return query.all()
 
     @classmethod
-    def by_tar_file(cls, session, tar_file):
-        """ Retrieve the files having the specified tar_file. """
-        query = session.query(cls).filter(cls.tar_file == tar_file)
+    def by_tarball(cls, session, tarball):
+        """ Retrieve the files having the specified tarball. """
+        query = session.query(cls).filter(cls.tarball == tarball)
 
         return query.all()
 
@@ -136,7 +136,7 @@ class File(BASE):
 
     @classmethod
     def by_filename(cls, session, filename):
-        """ Retrieve the files having the specified tar_file. """
+        """ Retrieve the files having the specified tarball. """
         query = session.query(cls).filter(cls.filename == filename)
 
         return query.all()
@@ -153,7 +153,7 @@ class File(BASE):
         ).filter(
             cls.filename == filename
         ).order_by(
-            cls.pkg_name, cls.tar_file, cls.filename
+            cls.pkg_name, cls.tarball, cls.filename
         )
 
         return query.first()
