@@ -117,6 +117,13 @@ class File(BASE):
         return query.all()
 
     @classmethod
+    def package_filenames(cls, session, pkg_name):
+        """ Retrieve all the files of a package """
+        query = session.query(cls.filename).filter(cls.pkg_name == pkg_name)
+
+        return query.all()
+
+    @classmethod
     def by_filename(cls, session, filename):
         """ Retrieve the files having the specified tar_file. """
         query = session.query(cls).filter(cls.filename == filename)
