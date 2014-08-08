@@ -49,6 +49,31 @@ class Package(BASE):
     pkg_name = sa.Column(sa.Text, primary_key=True)
 
 
+class Release(BASE):
+    """ The ``releases`` table stores for each package the releases that have
+    been covered by summershum.
+    """
+    __tablename__ = 'releases'
+
+    pkg_name = sa.Column(
+        sa.Text,
+        sa.ForeignKey('package.pkg_name', onupdate='CASCADE'),
+        nullable=False,
+        index=True)
+
+    tarball = sa.Column(sa.Text, primary=True)
+
+    # For now, this is an md5 handed to us by another application, so it need
+    # only be 32 bits.  But in the future we'd like to move to a more modern
+    # hash.  Therefore we size this column up to 64 bits.
+    tar_sum = sa.Column(sa.String(64), primary=True)
+
+    package = relation('Package', remote_side=[pkg_name], backref='releases')
+
+    __table_args__ = (
+        sa.UniqueConstraint('tarball', 'tar_sum'),
+    )
+
 class File(BASE):
     """ The ``files`` table in the database containing all the sha256sum
     of all the files in all the packages.
@@ -64,22 +89,12 @@ class File(BASE):
     sha1sum = sa.Column(sa.String(40), index=True, nullable=True)
     md5sum = sa.Column(sa.String(32), index=True, nullable=True)
 
-    pkg_name = sa.Column(
-        sa.Text,
-        sa.ForeignKey('package.pkg_name', onupdate='CASCADE'),
-        nullable=False,
-        index=True)
-    tarball = sa.Column(sa.Text, nullable=False)
-
-    # For now, this is an md5 handed to us by another application, so it need
-    # only be 32 bits.  But in the future we'd like to move to a more modern
-    # hash.  Therefore we size this column up to 64 bits.
-    tar_sum = sa.Column(sa.String(64), index=True, nullable=False)
-
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
+    tarball = relation('Release', remote_side=[tarball], backref='files')
+
     __table_args__ = (
-        sa.UniqueConstraint('tar_sum', 'filename'),
+        sa.UniqueConstraint('tarball', 'filename'),
     )
 
     def __repr__(self):
