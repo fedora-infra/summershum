@@ -124,17 +124,6 @@ class File(BASE):
         return query.all()
 
     @classmethod
-    def file_filter(cls, session, pkg_name, pattern):
-        """ Retrieve all the files of package matching the pattern """
-        query = session.query(cls.filename).filter(
-            cls.pkg_name == pkg_name
-        ).filter(
-            cls.filename.endswith(pattern)
-        )
-
-        return query.all()
-
-    @classmethod
     def by_filename(cls, session, filename):
         """ Retrieve the files having the specified tarball. """
         query = session.query(cls).filter(cls.filename == filename)
@@ -161,7 +150,8 @@ class File(BASE):
     get = exists
 
     @classmethod
-    def get_all_packages(cls, session, pattern, limit=None, count=False, page=None):
+    def get_all_packages(cls, session, pattern, extension=None,
+                         limit=None, count=False, page=None):
         """ Returns a list of all packages """
 
         if '*' in pattern:
@@ -189,6 +179,9 @@ class File(BASE):
         ).order_by(
             cls.pkg_name
         )
+
+        if extension:
+            query = query.filter(cls.filename.endswith(extension))
 
         offset = page
 
