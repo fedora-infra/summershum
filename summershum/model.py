@@ -61,12 +61,12 @@ class Release(BASE):
         nullable=False,
         index=True)
 
-    tarball = sa.Column(sa.Text, primary=True)
+    tarball = sa.Column(sa.Text, primary_key=True)
 
     # For now, this is an md5 handed to us by another application, so it need
     # only be 32 bits.  But in the future we'd like to move to a more modern
     # hash.  Therefore we size this column up to 64 bits.
-    tar_sum = sa.Column(sa.String(64), primary=True)
+    tar_sum = sa.Column(sa.String(64), primary_key=True)
 
     package = relation('Package', remote_side=[pkg_name], backref='releases')
 
