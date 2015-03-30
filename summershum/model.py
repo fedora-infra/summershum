@@ -110,6 +110,19 @@ class File(BASE):
         return query.all()
 
     @classmethod
+    def package_tarball(cls, session, pkg_name):
+        """ Retrieve the versions of a package i.e. tarballs of a package. """
+        query = session.query(
+            sa.func.distinct(cls.tarball)
+        ).filter(
+            cls.pkg_name == pkg_name
+        ).order_by(
+            cls.tarball
+        )
+
+        return query.all()
+
+    @classmethod
     def by_tarball(cls, session, tarball):
         """ Retrieve the files having the specified tarball. """
         query = session.query(cls).filter(cls.tarball == tarball)
