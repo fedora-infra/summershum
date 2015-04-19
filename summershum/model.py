@@ -130,6 +130,13 @@ class File(BASE):
         return query.all()
 
     @classmethod
+    def tarball_info(cls, session, tarball):
+        """ Retrieve the files having the specified tarball. """
+        query = session.query(cls).filter(cls.tarball == tarball)
+
+        return query.first()
+
+    @classmethod
     def tarball_filenames(cls, session, tarball):
         """ Retrieve all the files of a tarball """
         query = session.query(cls.filename).filter(cls.tarball == tarball)
