@@ -92,7 +92,13 @@ class File(BASE):
 
     created_on = sa.Column(sa.DateTime, default=datetime.datetime.utcnow)
 
-    tarball = relation('Release', remote_side=[tarball], backref='files')
+    tarball = sa.Column(
+        sa.Text,
+        sa.ForeignKey('releases.tarball', onupdate='CASCADE'),
+        nullable=False,
+        index=True)
+
+    release = relation('Release', remote_side=[tarball], backref='files')
 
     __table_args__ = (
         sa.UniqueConstraint('tarball', 'filename'),
