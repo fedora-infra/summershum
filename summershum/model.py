@@ -58,7 +58,7 @@ class Release(BASE):
 
     pkg_name = sa.Column(
         sa.Text,
-        sa.ForeignKey('package.pkg_name', onupdate='CASCADE'),
+        sa.ForeignKey('packages.pkg_name', onupdate='CASCADE'),
         nullable=False,
         index=True)
 
