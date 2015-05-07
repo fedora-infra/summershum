@@ -193,16 +193,10 @@ class File(BASE):
             pattern = pattern.replace('*', '%')
 
         if limit is not None:
-            try:
-                limit = abs(int(limit))
-            except ValueError:
-                raise PkgdbException('Wrong limit provided')
+            limit = abs(int(limit))
 
         if page is not None:
-            try:
-                page = abs(int(page))
-            except ValueError:
-                raise PkgdbException('Wrong page provided')
+            page = abs(int(page))
 
         if page is not None and page > 0 and limit is not None and limit > 0:
             page = (page - 1) * limit
